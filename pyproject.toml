@@ -19,6 +19,9 @@ dependencies = [
     "matplotlib",
 ]
 
+[project.scripts]
+force-training-rate-network = "force_training_rate_network.cli:main"
+
 [project.urls]
 homepage = "https://github.com/fraziphy/force-training-rate-network"
 repository = "https://github.com/fraziphy/force-training-rate-network"
