@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "force-training-rate-network"
+version = "0.1.0"
+description = "A module for training rate recurrent neural networks to perform sequential tasks using first-order reduced and controlled error (FORCE) training."
+readme = "README.md"
+readme-content-type = "text/markdown"
+requires-python = ">=3.7"
+license = {text = "GNU General Public License v3 (GPLv3)"}
+authors = [
+    {name = "Farhad Razi", email = "farhad.razi.1988@gmail.com"},
+]
+keywords = ["neural decoding", "machine learning", "neuroscience", "stimulus reconstruction"]
+dependencies = [
+    "numpy",
+    "matplotlib",
+]
+
+[project.urls]
+homepage = "https://github.com/fraziphy/force-training-rate-network"
+repository = "https://github.com/fraziphy/force-training-rate-network"
+download = "https://github.com/fraziphy/force-training-rate-network/archive/refs/tags/v0.1.0.tar.gz"
+
+[project.classifiers]
+# Classifiers from https://pypi.org/classifiers/
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Machine Learning",
+    "Topic :: Scientific/Engineering :: Neuroscience",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
