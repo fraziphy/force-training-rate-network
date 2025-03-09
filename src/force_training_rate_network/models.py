@@ -45,7 +45,7 @@ class GeneratorNetwork:
 
         # Random number generators
         if RNG_conn is None:
-            RNG_conn = [np.random.default_rng(seed) for seed in range(3)]
+            RNG_conn = [np.random.default_rng(seed) for seed in range(4)]
         if RNG_init is None:
             RNG_init = np.random.default_rng(0)
         self.RNG_conn = RNG_conn
@@ -122,7 +122,7 @@ class GeneratorNetworkFeedback(GeneratorNetwork):
     """
 
     def __init__(self,
-                 N_network=100,
+                 N_network=1000,
                  N_readout=1,
                  g_GG=1.5,
                  g_GZ=1.0,
@@ -141,9 +141,11 @@ class GeneratorNetworkFeedback(GeneratorNetwork):
                          RNG_conn=RNG_conn,
                          RNG_init=RNG_init)
 
-        # Feedback connection from readout to network
-        if RNG_conn is None or len(RNG_conn) < 4:
-            raise ValueError("RNG_conn must have at least 4 random number generators.")
+        # Random number generators
+        if RNG_conn is None:
+            RNG_conn = [np.random.default_rng(seed) for seed in range(4)]
+        if RNG_init is None:
+            RNG_init = np.random.default_rng(0)
 
         J_Z_raw = 2 * RNG_conn[3].random((self.N_network, N_readout)) - 1
         if np.isscalar(g_GZ):

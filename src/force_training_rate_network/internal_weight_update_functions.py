@@ -1,4 +1,4 @@
-# internal_weight_update_functions.py
+# src/force_training_rate_network/internal_weight_update_functions.py
 import numpy as np
 
 def update_internal_weights_standard(network, delta_W):

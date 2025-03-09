@@ -4,13 +4,14 @@ import pickle
 from .models import GeneratorNetwork, GeneratorNetworkFeedback
 from .simulation import SimulationEngine
 from .training import FORCETrainer
+from .lyapunov import LyapunovExponentCalculator
 
 def main():
-    parser = argparse.ArgumentParser(description="Simulate or train FORCE networks.")
+    parser = argparse.ArgumentParser(description="Simulate, train, or compute Lyapunov exponent for FORCE networks.")
     parser.add_argument("--network", type=str, choices=["generator_network", "generator_network_feedback"], required=True, help="Type of network to simulate.")
-    parser.add_argument("--mode", type=str, choices=["spontaneous", "force_training"], required=True, help="Mode: spontaneous activity or FORCE training.")
+    parser.add_argument("--mode", type=str, choices=["spontaneous", "force_training", "lyapunov"], required=True, help="Mode: spontaneous activity, FORCE training, or Lyapunov exponent computation.")
     parser.add_argument("-o", "--output", type=str, default="data.pkl", help="Output data file (pickle format).")
-    parser.add_argument("--simulation_time", type=int, default=200, help="Simulation time in ms (for spontaneous mode).")
+    parser.add_argument("--simulation_time", type=int, default=200, help="Simulation time in ms (for spontaneous mode or Lyapunov mode).")
     parser.add_argument("--dt", type=float, default=0.1, help="Simulation time step in milliseconds.")
     parser.add_argument("--N_network", type=int, default=1000, help="Number of neurons in the network.")
     parser.add_argument("--N_readout", type=int, default=1, help="Number of readout neurons.")
@@ -24,6 +25,11 @@ def main():
     parser.add_argument("--target_signal", type=str, help="Path to target signal file (for FORCE training).")
     parser.add_argument("--training_periods", type=int, default=10, help="Number of periods for training (for FORCE training).")
     parser.add_argument("--update_step", type=int, default=2, help="Step in ms at which weights are updated (for FORCE training).")
+
+    # Arguments specific to Lyapunov computation
+    parser.add_argument("--renorm_interval", type=float, default=50.0, help="Renormalization interval in ms (for Lyapunov mode).")
+    parser.add_argument("--delta_separation", type=float, default=1e-10, help="Initial infinitesimal separation between trajectories (for Lyapunov mode).")
+    parser.add_argument("--store_trajectories", action="store_true", help="Store trajectories of original and perturbed networks (for Lyapunov mode).")
 
     args = parser.parse_args()
 
@@ -46,9 +52,39 @@ def main():
 
     if args.mode == "spontaneous":
         # Spontaneous activity mode
-        engine = SimulationEngine(net)
-        rates, readouts = engine.run_spontaneous(args.simulation_time)
-        save_data({"rates": rates, "readouts": readouts}, args.output)
+        engine = SimulationEngine(net, args.simulation_time)
+        results = engine.run()
+        save_data({
+            "rates": results[0],
+            "readouts": results[1]
+        }, args.output)
+
+    elif args.mode == "lyapunov":
+        # Lyapunov exponent computation mode
+        calculator = LyapunovExponentCalculator(
+            network=net,
+            simulation_time=args.simulation_time,
+            dt=args.dt,
+            renorm_interval=args.renorm_interval,
+            delta_separation=args.delta_separation,
+            store_trajectories=args.store_trajectories
+        )
+
+        # Initialize perturbation and compute Lyapunov exponent
+        calculator.initialize_perturbation()
+        calculator.compute()
+
+        # Get results and save them
+        results = calculator.get_results()
+
+        save_data({
+            "lyapunov_exponent": results[0],
+            "diff_over_time": results[1],
+            "rates_original": results[2],
+            "rates_neighbour": results[3],
+            "true_diff_over_time": results[4]
+        }, args.output)
+
 
     elif args.mode == "force_training":
         # FORCE training mode
@@ -70,7 +106,15 @@ def main():
 
         # Save results
         results = trainer.get_results()
-        save_data({"results": results}, args.output)
+        save_data({
+            "J_GG_initial": results[0],
+            "J_GG_final": results[1],
+            "rate_all": results[2],
+            "Z_all": results[3],
+            "W_all": results[4],
+            "W_dot": results[5]
+        }, args.output)
+
 
 def save_data(data, filename):
     """Save data to a pickle file."""
