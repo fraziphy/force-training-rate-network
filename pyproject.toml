@@ -16,7 +16,24 @@ authors = [
 keywords = ["neural decoding", "machine learning", "neuroscience", "stimulus reconstruction"]
 dependencies = [
     "numpy",
+    "pickle",
     "matplotlib",
+    "copy",
+]
+
+# Move classifiers directly under [project]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Machine Learning",
+    "Topic :: Scientific/Engineering :: Neuroscience"
 ]
 
 [project.scripts]
@@ -29,22 +46,6 @@ force-training-rate-network = "force_training_rate_network.cli:main"
 homepage = "https://github.com/fraziphy/force-training-rate-network"
 repository = "https://github.com/fraziphy/force-training-rate-network"
 download = "https://github.com/fraziphy/force-training-rate-network/archive/refs/tags/v0.1.0.tar.gz"
-
-[project.classifiers]
-# Classifiers from https://pypi.org/classifiers/
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Topic :: Scientific/Engineering :: Information Analysis",
-    "Topic :: Scientific/Engineering :: Machine Learning",
-    "Topic :: Scientific/Engineering :: Neuroscience",
-]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
