@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "force-training-rate-network"
 version = "0.1.0"
 description = "A module for training rate recurrent neural networks to perform sequential tasks using first-order reduced and controlled error (FORCE) training."
-readme = {file = "README.md", content-type = "text/markdown"}  # Correct format
+readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.7"
 license = {text = "GNU General Public License v3 (GPLv3)"}
 authors = [
@@ -15,9 +15,7 @@ authors = [
 keywords = ["neural decoding", "machine learning", "neuroscience", "stimulus reconstruction"]
 dependencies = [
     "numpy",
-    "pickle",
     "matplotlib",
-    "copy",
 ]
 
 classifiers = [
