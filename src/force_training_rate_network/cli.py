@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 import pickle
+import os
 from .models import GeneratorNetwork, GeneratorNetworkFeedback
 from .simulation import SimulationEngine
 from .training import FORCETrainer
@@ -22,7 +23,11 @@ def main():
     parser.add_argument("--g_GZ", type=float, default=1.0, help="Feedback connection strength (only for feedback network).")
 
     # Arguments specific to FORCE training
-    parser.add_argument("--target_signal", type=str, help="Path to target signal file (for FORCE training).")
+    parser.add_argument(
+                "--target_signal",
+                type=str,
+                default=os.path.join(os.path.dirname(__file__), "../sample_target_signal/target.npy"),
+                help="Path to target signal file (for FORCE training). Default: src/sample_target_signal/target.npy")
     parser.add_argument("--training_periods", type=int, default=10, help="Number of periods for training (for FORCE training).")
     parser.add_argument("--update_step", type=int, default=2, help="Step in ms at which weights are updated (for FORCE training).")
 

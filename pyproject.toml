@@ -22,6 +22,9 @@ dependencies = [
 [project.scripts]
 force-training-rate-network = "force_training_rate_network.cli:main"
 
+[tool.setuptools.package-data]
+"force_training_rate_network" = ["../sample_target_signal/target.npy"]
+
 [project.urls]
 homepage = "https://github.com/fraziphy/force-training-rate-network"
 repository = "https://github.com/fraziphy/force-training-rate-network"
