@@ -4,33 +4,40 @@
 for testing run the command s from the directory:
 
 
-python -m unittest discover -s tests -v
 
+```
+python -m unittest discover -s tests -v
+```
 
 
 Spontaneous Activity Mode
 
-python -m force_training_rate_network.cli --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
 
+
+```
+python -m force_training_rate_network.cli --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
+```
 
 
 Lyapunov Exponent Computation Mode
 
+
+
+```
 python -m force_training_rate_network.cli --network generator_network --mode lyapunov --simulation_time 30000 --renorm_interval 50 --delta_separation 1e-10 --store_trajectories --output lyapunov.pkl
-
-
+```
 
 
 FORCE Training Mode
 
+```
 python -m force_training_rate_network.cli --network generator_network_feedback --mode force_training --target_signal target.npy --training_periods 10 --update_step 5 --output training.pkl
+```
 
 
 
 
 
-
-git commit -m "Fix project.classifiers format in pyproject.toml"
 
 
 
