@@ -129,24 +129,32 @@ class LyapunovExponentCalculator:
 
     def get_results(self):
         """
-        Return computed results as a tuple of lists.
+        Return computed results as a tuple of numpy arrays.
 
         Returns:
             tuple: A tuple containing:
-
                 - lyapunov_exponent (float): The computed Lyapunov exponent.
-                - diff_over_time (list): Differences over time.
-                - rates_original (list or None): Original rates if stored, else None.
-                - rates_neighbour (list or None): Perturbed rates if stored, else None.
-                - true_diff_over_time (list or None): True differences if stored, else None.
+                - diff_over_time (np.ndarray): Differences over time.
+                - rates_original (np.ndarray or None): Original rates if stored, else None.
+                - rates_neighbour (np.ndarray or None): Perturbed rates if stored, else None.
+                - true_diff_over_time (np.ndarray or None): True differences if stored, else None.
         """
         lyapunov_exponent = np.mean(self.lyapunov_exponents) * self.scale_to_seconds
 
-        return (
+        # Convert rates_original and rates_perturbed to numpy arrays if they exist
+        rates_original = (
+            np.array(self.rates_original).T.reshape(4,-1) if hasattr(self, "rates_original") and self.rates_original else None
+        )
+        rates_perturbed = (
+            np.array(self.rates_perturbed).T.reshape(4,-1) if hasattr(self, "rates_perturbed") and self.rates_perturbed else None
+        )
 
+        return (
             lyapunov_exponent,
-            list(self.diff_over_time),
-            getattr(self, "rates_original", None),
-            getattr(self, "rates_perturbed", None),
-            getattr(self, "true_diff_over_time", None))
+            np.array(self.diff_over_time),
+            rates_original,
+            rates_perturbed,
+            np.array(getattr(self, "true_diff_over_time", []))  # Convert true_diff_over_time to np.array
+        )
+
 

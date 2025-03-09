@@ -29,11 +29,13 @@ class SimulationEngine:
 
         # Simulate the network
         for t_idx, t in enumerate(self.time):
-            self.network.state_update(self.dt)
 
             # Store the rates and readouts
             rates[:, t_idx] = self.network.rate.flatten()
             readouts[:, t_idx] = self.network.Z.flatten()
+
+
+            self.network.state_update(self.dt)
 
         # Return results for further analysis or visualization
         return rates, readouts
