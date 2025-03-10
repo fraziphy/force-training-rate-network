@@ -101,7 +101,7 @@ class FORCETrainer:
         self.dt = dt
         self.l_steps = l_steps
 
-        self.period = target.shape[1]
+        self.period = self.target.shape[1]
         self.T_prior_learning = 2 * self.period
         self.T_training = stop_period * self.period
         self.T_post_learning = 2 * self.period
