@@ -8,6 +8,92 @@ from .internal_weight_update_functions import (
 )
 
 class GeneratorNetwork:
+    _usage_guide = """
+    GeneratorNetwork and GeneratorNetworkFeedback Usage Guide:
+
+    1. Initialize the network:
+    For GeneratorNetwork:
+    network = GeneratorNetwork(N_network=1000, N_readout=1, g_GG=1.5, p_GG=0.1, p_z=0.1, tau=10.0, internal_weight_update_method='standard')
+
+    For GeneratorNetworkFeedback:
+    feedback_network = GeneratorNetworkFeedback(N_network=1000, N_readout=1, g_GG=1.5, g_GZ=1.0, p_GG=0.1, p_z=0.1, tau=10.0)
+
+    Parameters:
+    - N_network (int): Number of neurons in the generator network (default: 1000).
+    - N_readout (int): Number of readout neurons (default: 1).
+    - g_GG (float or np.ndarray): Synaptic strength in the generator network (default: 1.5). Can be scalar or array-like for GeneratorNetwork.
+    - g_GZ (float): Feedback strength from readout to network (default: 1.0, only for GeneratorNetworkFeedback). Must be scalar.
+    - p_GG (float): Connection probability for internal connections (default: 0.1).
+    - p_z (float): Connection probability for readout connections (default: 0.1).
+    - tau (float): Time constant for synaptic decay in milliseconds (default: 10.0).
+    - internal_weight_update_method (str): Method for updating internal weights ('standard', 'scalar_g', or 'vector_g', only for GeneratorNetwork).
+    - RNG_conn (list): List of random number generators for connectivity (optional).
+    - RNG_init (numpy.random.Generator): Random number generator for initialization (optional).
+
+    2. Update the network state:
+    network.state_update(dt)
+
+    Parameters:
+    - dt (float): Time step for updating the neuron's state in milliseconds.
+
+    3. Perform weight updates:
+    network.weight_update(target_point)
+
+    Parameters:
+    - target_point (numpy.ndarray): Target output for readout neurons.
+
+    4. Use child classes for specialized networks:
+    - For a simple generator network without feedback, use `GeneratorNetwork`.
+        Example:
+        generator_network = GeneratorNetwork(N_network=1000, N_readout=1)
+
+    - For a generator network with feedback from readout neurons to the network, use `GeneratorNetworkFeedback`.
+        Example:
+        feedback_network = GeneratorNetworkFeedback(N_network=1000, N_readout=1, g_GZ=1.0)
+
+    Example usage:
+
+    import numpy as np
+    from your_module import GeneratorNetwork, GeneratorNetworkFeedback
+
+    # Initialize networks
+    network = GeneratorNetwork(N_network=1000, N_readout=1, g_GG=1.5, p_GG=0.1, p_z=0.1, tau=10.0)
+    feedback_network = GeneratorNetworkFeedback(N_network=1000, N_readout=1, g_GG=1.5, g_GZ=1.0, p_GG=0.1, p_z=0.1, tau=10.0)
+
+    # Simulation loop
+    dt = 0.1
+    simulation_time = 1000
+    target_function = lambda t: np.sin(2 * np.pi * t / 1000)
+
+    for t in range(int(simulation_time / dt)):
+        # Update network states
+        network.state_update(dt)
+        feedback_network.state_update(dt)
+
+        # Generate target point
+        target = target_function(t * dt)
+        target_point = np.array([[target]])
+
+        # Perform weight updates
+        network.weight_update(target_point)
+        feedback_network.weight_update(target_point)
+
+        # Here you can record or analyze network output
+        # network_output = network.Z
+        # feedback_network_output = feedback_network.Z
+
+    Important notes:
+    - Ensure that the dimensions of `target_point` match `N_readout`.
+    - The time step `dt` must be non-zero to avoid ValueError.
+    - For `GeneratorNetwork`, `g_GG` can be a scalar or an array of size `N_network`.
+    - For `GeneratorNetworkFeedback`, `g_GZ` must be a scalar.
+    - The internal weight update method is only applicable to `GeneratorNetwork`, not `GeneratorNetworkFeedback`.
+    """
+
+    @property
+    def help(self):
+        print(self._usage_guide)
+
     """
     Generator Network for FORCE training.
     """

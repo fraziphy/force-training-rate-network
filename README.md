@@ -1,203 +1,208 @@
-# linear_decoder.py
-
-
-for testing run the command s from the directory:
-
-
-
-```
-python -m unittest discover -s tests -v
-```
-
-
-Spontaneous Activity Mode
-
-
-
-```
-python -m force_training_rate_network.cli --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
-```
-
-
-Lyapunov Exponent Computation Mode
-
-
-
-```
-python -m force_training_rate_network.cli --network generator_network --mode lyapunov --simulation_time 30000 --renorm_interval 50 --delta_separation 1e-10 --store_trajectories --output lyapunov.pkl
-```
-
-
-FORCE Training Mode
-
-```
-python -m force_training_rate_network.cli --network generator_network_feedback --mode force_training --target_signal target.npy --training_periods 10 --update_step 5 --output training.pkl
-```
-
-
-
-
-
-
-
-
+# _**force-training-rate-network**_
+=====================================
 
 ## Overview
+---------------
 
-### _**linear_decoder.py**_ is a Python module designed to integrate techniques required for reconstructing external stimuli from evoked neural signals in response to external stimuli using machine learning approaches. This tool is particularly useful in neuroscience research, where understanding the relationship between neural activity and external stimuli is crucial.
+The `force-training-rate-network` module implements the FORCE (First-Order Reduced and Controlled Error) training algorithm for recurrent neural networks. This method enables networks to learn complex dynamical tasks by leveraging high-dimensional chaotic dynamics and supervised learning through Recursive Least Squares (RLS). The FORCE method is particularly useful for training rate-based neural networks and has applications in neuroscience, machine learning, and control systems.
 
-One of the fascinating challenges in neuroscience is assessing how reliably neural responses reflect external stimuli. A common approach to this is decoding external stimuli from evoked neural responses, which can include various forms of neural data such as:
+This implementation is inspired by the seminal work of Abbott and Sussillo, 2009, [doi:10.1016/j.neuron.2009.07.018](https://doi.org/10.1016/j.neuron.2009.07.018),, which introduced FORCE training as a robust method for learning in recurrent networks.
 
-- Spiking activity,
-- Local Field Potentials (LFP).
-- Electroencephalography (EEG) signals.
+### References
+- Sussillo, D., & Abbott, L. F. (2009). Generating coherent patterns of activity from chaotic neural networks. *Neuron*, 63(4), 544–557.
+- Sussillo, D., & Abbott, L. F. (2012). Transferring learning from rate to spiking networks. *Nature Neuroscience*, 15(4), 478–486.
+=====================================
 
-The _**LinearDecoder**_ class, defined in the _**linear_decoder.py**_ module, provides functionality for this decoding process, facilitating the analysis of neural recordings and enhancing the interpretability of decoding results. This tool is valuable for researchers studying neural coding, sensory processing, and brain-computer interfaces.
+## Methodology
+-------------
 
-### Methodology
+The FORCE training algorithm utilizes the following key principles:
+1. **High-Dimensional Chaotic Dynamics**: The network starts with random connectivity that induces chaotic activity, providing a rich reservoir of dynamics.
+2. **Error-Driven Learning**: A supervisor provides an error signal to guide the network toward desired outputs.
+3. **Recursive Least Squares (RLS)**: The RLS algorithm dynamically adjusts the output weights to minimize the error between the network's output and the target signal.
 
-_**LinearDecoder**_ employs a supervised learning algorithm to train a decoder with an exponential kernel to reconstruct external stimuli from evoked neural responses. The core of the method involves solving a regularized least squares problem to determine the weights of the linear decoder in a supervised manner.
+This implementation supports:
+- Training rate-based recurrent networks using FORCE.
+- Simulation of learned dynamics.
+- Analysis of Lyapunov exponents to study stability.
 
-Key features of the LinearDecoder include:
-- Use of first-order statistics of neural decoding (the amplitude and timing of evoked neural responses).
-- Application of regularization techniques to improve generalization.
-- Flexibility to work with various types of neural data.
-
-## Current Limitations and Future Developments
-
-It is important to note that the current version of _**LinearDecoder**_ focuses on first-order statistics of neural responses for decoding. Future developments may include:
-
-- Incorporation of higher-order statistics for encoding information, such as network correlations and noise correlations.
-- Implementation of more advanced models, such as recurrent rate neural networks, to address the higher-order statistics.
-
-These enhancements would allow for more sophisticated analysis of neural data, potentially revealing deeper insights into neural coding mechanisms.
-
-### Applications in Neuroscience Research
-
-The LinearDecoder can be particularly useful in various neuroscience research areas, including:
-
-1. **Multisensory Integration Studies**: Investigating how the brain combines information from different sensory modalities.
-2. **Autism Research**: Examining how autism might modulate sensory integration processes.
-3. **ADHD Studies**: Assessing whether attention deficit disorders have differential effects on auditory versus visual sensory processing.
-4. **Brain-Computer Interfaces**: Developing systems that translate neural signals into control commands for external devices.
-5. **Sensory Neuroscience**: Exploring how different sensory stimuli are encoded in neural activity.
-
-By providing a tool for quantitative analysis of neural responses, _**LinearDecoder**_ contributes to our understanding of brain function and information processing in various contexts.
-
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+For further details on the methodology, refer to Abbott and Sussillo's original papers.
+=====================================
 
 ## Installation
+--------------
 
-To install the _**linear_decoder.py**_ module, ensure the necessary Python libraries **numpy** and **sklearn** are installed. Please verify that the corresponding dependencies are present.
+To install the `force-training-rate-network` module:
 
-### Optional testing instructions for contributors or interested users:
-To confirm that the scripts and required libraries are installed on your local machine, navigate to the  _**linear_decoder**_  directory. You can begin by testing the Python scripts within the project and scripts directories. To do this, install the Python library nose2 and execute it from the command line:
-```
-$ git clone https://github.com/your_username/linear-decoder.git
-$ cd path/to/the/linear-decoder.git
-$ pip install -e .[tests]
-$ pip install nose2
-$ python -m nose2
-```
-
-To **install** the _**LinearDecoder**_ module from GitHub, run the following command:
-```
-!pip install git+ssh://git@github.com/fraziphy/force-training-rate-network.git@v1.0.0
-```
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-
-To **uninstall** the module, please copy and execute the following command in a single cell:
+1. Clone the repository:
 
 ```
-!python -m pip uninstall linear-decoder.git --yes
+git clone https://github.com/fraziphy/force-training-rate-network.git
+cd force-training-rate-network
 ```
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+2. Install the package using pip:
+
+```
+pip install .
+```
+
+Alternatively, install directly from GitHub:
+
+```
+pip install git+https://github.com/fraziphy/force-training-rate-network.git@v1.0.0
+```
+
+To uninstall the module:
+
+```
+pip uninstall force-training-rate-network.git@v1.0.0
+```
+=====================================
 
 ## Usage
+-----
 
-After a successful installation, you can import the module using the following syntax:
-```
-from linear_decoder import LinearDecoder # The Class LinearDecoder in the linear_decoder module to decode external stimuli from neural recordings 
-```
-Follow these steps to use the decoder:
+There are two primary ways to use the `force-training-rate-network` module:
 
-### 1. Initialize the decoder
-```
-decoder = LinearDecoder(dt, tau, lambda_reg, rng)
-```
+### 1. Direct Import in Python Scripts or Jupyter Notebooks
 
-**Parameters:**
-- `dt`: Recording resolution (time step) in milliseconds.
-- `tau`: Time constant for the exponential kernel in milliseconds.
-- `lambda_reg`: Regularization strength to prevent overfitting.
-- `rng`: Random number generator (e.g., `np.random.default_rng(seed)`).
+You can import and use the module directly in your Python scripts or Jupyter notebooks for more flexible and interactive use.
 
-### 2. Preprocess data
+#### Example:  Simulating and Training a Rate Neural Network
+
 ```
-filtered_spikes = decoder.preprocess_data(spikes_trials_all, n_neurons, duration)
+from force_training_rate_network.models import GeneratorNetwork
+from force_training_rate_network.training import FORCETrainer
+from force_training_rate_network.simulation import SimulationEngine
+from force_training_rate_network.lyapunov import LyapunovExponentCalculator
+import numpy as np
 ```
 
-**Parameters:**
-- `n_neurons`: Number of neurons in the recording (or recording channels in LFP/EEG).
-- `duration`: Total duration of the recording in milliseconds.
+Initialize a generator network:
 
-**Note:** 
-- `spikes_trials_all` should be a list of trials, where each trial is a list of tuples of spike_time and neuron_id (spike_time, neuron_id)`.
-- The resulting `filtered_spikes` will have shape `(n_trials, n_steps, n_neurons)`.
-
-### 3. Fit the decoder and make predictions
 ```
-decoder.fit(filtered_spikes[training_trial_indices], signal)
-prediction = decoder.predict(filtered_spikes[test_trial_indices])
-RMSE = decoder.compute_rmse(prediction, signal)
+net = GeneratorNetwork(
+			      N_network,
+                               N_readout,
+                               g_GG,
+                               p_GG,
+                               p_z,
+                               tau)
 ```
 
-### 4. Perform stratified cross-validation
+Or,
+
 ```
-train_errors, test_errors, all_weights = decoder.stratified_cv(filtered_spikes, signal, n_splits=5)
+net = GeneratorNetworkFeedback(
+			        N_network,
+                                 N_readout,
+                                 g_GG,
+                                 g_GZ,
+                                 p_GG,
+                                 p_z,
+                                 tau)
 ```
 
-After performing stratified cross-validation, you can access:
-- `decoder.example_predicted_train`: An example of a predicted signal for a training trial.
-- `decoder.example_predicted_test`: An example of a predicted signal for a test trial.
+To simulate the spontaneous activity of the network
 
-## Important Considerations
+```
+engine = SimulationEngine(net, simulation_time, dt)
+rates, readouts= engine.run()
+```
 
-- Ensure the signal is a 2D array with dimensions `(n_signals, n_time_steps)`.
-- Make sure the signal has the same temporal resolution as your recording (determined by `dt`).
-- The `duration` and `dt` parameters should match the temporal properties of your spike data and signal.
+To compute the Maximal Lyapunov Exponent (MLE)
+
+```
+calculator = LyapunovExponentCalculator(
+            net,
+            simulation_time,
+            dt,
+            renorm_interval,
+            delta_separation,
+            store_trajectories=True
+        )
+
+# Initialize perturbation and compute Lyapunov exponent
+calculator.initialize_perturbation()
+calculator.compute()
+
+# Get results
+lyapunov_exponent, diff_over_time, rates_original, rates_neighbour, true_diff_over_time = calculator.get_results()
+```
+
+To train the network using FORCE
+
+```
+target_signal = np.load(/path/to/the/np.array)
+
+# Initialize trainer
+trainer = FORCETrainer(net,
+                        target_signal,
+                        training_periods,
+                        dt,
+                        update_step)
+
+# Train network
+trainer.train()
+
+# Get results
+
+J_GG_initial, J_GG_final, rate_all, Z_all, W_all, W_dot = trainer.get_results()
+```
+
+### 2. Command Line Interface (CLI)
+
+The module also provides a command-line interface for easy execution of common tasks.
+
+To simulate spontaneous activity of a network:
+
+```
+force-training-rate-network --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
+```
+
+To compute MLE:
+
+```
+force-training-rate-network --network generator_network --mode lyapunov --simulation_time 30000 --renorm_interval 50 --delta_separation 1e-10 --store_trajectories --output lyapunov.pkl
+```
+
+To perform FORCE training on the network:
+
+```
+force-training-rate-network --network generator_network_feedback --mode force_training --target_signal target.npy --training_periods 10 --update_step 5 --output training.pkl
+```
+=====================================
 
 ## Accessing Help
 
-You can access this guide within your code by using:
+You can access the guide within your python scripts or Jupyter Notebooks by using:
 ```
-decoder.help
-```
+net = GeneratorNetwork()
+net.help
 
-This will print the usage instructions directly in your Python environment.
+engine = SimulationEngine(net)
+engine.help
+
+calculator = LyapunovExponentCalculator(net)
+calculator.help
+
+trainer = FORCETrainer(net)
+trainer.help
+```
+These will print the usage instructions directly in your Python environment.
+
+Additionally, you can access the guid for the command-line interface using:
+
+```
+force-training-rate-network --extended-help
+```
+=====================================
 
 ## Example Notebook
 
 A Jupyter notebook has been included to demonstrate how to use the _**LinearDecoder**_ class with dummy data. The notebook verifies that the defined class can perform decoding tasks effectively.
-
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+=====================================
 
 ## The structure of the project is as follows:
 ```
@@ -251,12 +256,7 @@ force-training-rate-network/
 
 - setup.py: The setup script for installing the _**linear_decoder**_ module as a Python package.
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+=====================================
 
 ## Contributing
 
@@ -287,36 +287,29 @@ Thank you for considering contributing to our project! We welcome contributions 
 
 We appreciate your contributions and look forward to working with you to improve our project! If you have any questions or need further assistance, please don't hesitate to reach out to us.
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+=====================================
 
 ## Credits
 
 - **Author:** [Farhad Razi](https://github.com/fraziphy)
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+=====================================
 
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE)
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
+=====================================
 
 ## Contact
 
 - **Contact information:** [email](farhad.razi.1988@gmail.com)
-# _**Linear_decoder.py**_
+
+=====================================
+
+## Acknowledgments
+
+This work was supported by the Dutch Research Council (NWO Vidi grant VI.Vidi.213.137).
+
+=====================================
+# _**force-training-rate-network**_

@@ -3,6 +3,74 @@ import numpy as np
 import copy
 
 class LyapunovExponentCalculator:
+    _usage_guide = """
+    LyapunovExponentCalculator Usage Guide:
+
+    1. Initialize the calculator:
+       calculator = LyapunovExponentCalculator(network, simulation_time=30000, dt=0.1, renorm_interval=50, delta_separation=1e-10, store_trajectories=False)
+
+       Parameters:
+       - network: The network object to analyze (must have state_update method)
+       - simulation_time: Total simulation time in milliseconds (default: 30000)
+       - dt: Simulation time step in milliseconds (default: 0.1)
+       - renorm_interval: Interval (in ms) at which renormalization occurs (default: 50)
+       - delta_separation: Initial infinitesimal separation between trajectories (default: 1e-10)
+       - store_trajectories: Whether to store the rates of the original and perturbed networks (default: False)
+
+    2. Initialize the perturbation:
+       calculator.initialize_perturbation()
+
+       This method sets up the initial infinitesimal difference between the original and perturbed trajectories.
+
+    3. Compute the Lyapunov exponent:
+       calculator.compute()
+
+       This method evolves both trajectories over time, periodically renormalizing their separation to compute the Lyapunov exponent.
+
+    4. Get the results:
+       results = calculator.get_results()
+
+       Returns a tuple containing:
+       - lyapunov_exponent (float): The computed Lyapunov exponent
+       - diff_over_time (np.ndarray): Differences between trajectories over time
+       - rates_original (np.ndarray or None): Original rates if stored, else None
+       - rates_perturbed (np.ndarray or None): Perturbed rates if stored, else None
+       - true_diff_over_time (np.ndarray or None): True differences if stored, else None
+
+    Example usage:
+    ```
+    import numpy as np
+    from your_network_module import YourNetwork
+    from force_training_rate_network.lyapunov import LyapunovExponentCalculator
+
+    # Create your network
+    network = YourNetwork(...)
+
+    # Initialize the calculator
+    calculator = LyapunovExponentCalculator(network, simulation_time=50000, store_trajectories=True)
+
+    # Initialize perturbation
+    calculator.initialize_perturbation()
+
+    # Compute Lyapunov exponent
+    calculator.compute()
+
+    # Get results
+    lyapunov_exponent, diff_over_time, rates_original, rates_perturbed, true_diff_over_time = calculator.get_results()
+
+    print(f"Lyapunov exponent: {lyapunov_exponent}")
+    ```
+
+    Important:
+    - Ensure your network object has a state_update(dt) method for evolving its state over time.
+    - The simulation_time should be long enough to allow for accurate Lyapunov exponent estimation.
+    - Setting store_trajectories to True will increase memory usage but allow for more detailed analysis.
+    """
+
+    @property
+    def help(self):
+        print(self._usage_guide)
+
     """
     A class to compute the maximal Lyapunov exponent for a given network.
     This class simulates two trajectories of the network with an infinitesimal

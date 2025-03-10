@@ -7,8 +7,67 @@ from .simulation import SimulationEngine
 from .training import FORCETrainer
 from .lyapunov import LyapunovExponentCalculator
 
+_cli_usage_guide = """
+Command Line Interface (CLI) Usage Guide for FORCE Network Simulation and Training
+
+This CLI allows you to simulate, train, or compute Lyapunov exponents for FORCE networks.
+
+General Usage:
+python -m your_module.cli [arguments]
+
+Arguments:
+  --network {generator_network,generator_network_feedback}
+                        Type of network to simulate (required)
+  --mode {spontaneous,force_training,lyapunov}
+                        Mode of operation (required)
+  -o OUTPUT, --output OUTPUT
+                        Output data file (pickle format)
+  --simulation_time SIMULATION_TIME
+                        Simulation time in ms (for spontaneous or Lyapunov mode)
+  --dt DT               Simulation time step in milliseconds
+  --N_network N_NETWORK
+                        Number of neurons in the network
+  --N_readout N_READOUT
+                        Number of readout neurons
+  --g_GG G_GG           Synaptic strength in the generator network
+  --p_GG P_GG           Connection probability for internal connections
+  --p_z P_Z             Connection probability for readout connections
+  --tau TAU             Time constant for synaptic decay
+  --g_GZ G_GZ           Feedback connection strength (only for feedback network)
+
+FORCE Training Specific Arguments:
+  --target_signal TARGET_SIGNAL
+                        Path to target signal file (for FORCE training)
+  --training_periods TRAINING_PERIODS
+                        Number of periods for training
+  --update_step UPDATE_STEP
+                        Step in ms at which weights are updated
+
+Lyapunov Computation Specific Arguments:
+  --renorm_interval RENORM_INTERVAL
+                        Renormalization interval in ms
+  --delta_separation DELTA_SEPARATION
+                        Initial infinitesimal separation between trajectories
+  --store_trajectories  Store trajectories of original and perturbed networks
+
+Examples:
+
+1. Spontaneous Activity Mode:
+   python -m your_module.cli --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
+
+2. FORCE Training Mode:
+   python -m your_module.cli --network generator_network_feedback --mode force_training --target_signal path/to/target.npy --training_periods 10 --update_step 5 --output training.pkl
+
+3. Lyapunov Exponent Computation Mode:
+   python -m your_module.cli --network generator_network --mode lyapunov --simulation_time 30000 --renorm_interval 50 --delta_separation 1e-10 --store_trajectories --output lyapunov.pkl
+
+Note: Replace 'your_module' with the actual name of your Python module.
+"""
+
+
 def main():
     parser = argparse.ArgumentParser(description="Simulate, train, or compute Lyapunov exponent for FORCE networks.")
+    parser.add_argument('--extended-help', action='store_true', help='Show extended usage guide')
     parser.add_argument("--network", type=str, choices=["generator_network", "generator_network_feedback"], required=True, help="Type of network to simulate.")
     parser.add_argument("--mode", type=str, choices=["spontaneous", "force_training", "lyapunov"], required=True, help="Mode: spontaneous activity, FORCE training, or Lyapunov exponent computation.")
     parser.add_argument("-o", "--output", type=str, default="data.pkl", help="Output data file (pickle format).")
@@ -37,6 +96,10 @@ def main():
     parser.add_argument("--store_trajectories", action="store_true", help="Store trajectories of original and perturbed networks (for Lyapunov mode).")
 
     args = parser.parse_args()
+
+    if args.extended_help:
+        print(_cli_usage_guide)
+        return
 
     # Initialize network
     if args.network == "generator_network":

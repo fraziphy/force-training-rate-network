@@ -2,6 +2,92 @@
 import numpy as np
 
 class FORCETrainer:
+    _usage_guide = """
+    FORCETrainer Usage Guide:
+
+    1. Initialize the FORCE trainer:
+    trainer = FORCETrainer(network, target, stop_period, dt, l_steps)
+
+    Parameters:
+    - network: An instance of GeneratorNetwork or GeneratorNetworkFeedback.
+    - target (numpy.ndarray): Target output for the network to learn. Shape: (N_readout, period).
+    - stop_period (int): Number of periods to train for.
+    - dt (float): Simulation time step in milliseconds.
+    - l_steps (int): Number of time steps between weight updates.
+
+    2. Run the training:
+    trainer.train()
+
+    This method runs the entire training process, including prior learning, training, and post-learning phases.
+
+    3. Get the results:
+    results = trainer.get_results()
+
+    Returns a tuple containing:
+    - J_GG_initial: Initial internal connectivity matrix.
+    - J_GG_final: Final internal connectivity matrix.
+    - rate_all: Activity of selected neurons over time.
+    - Z_all: Readout activity over time.
+    - W_all: Readout weights at start, after first update, and end of training.
+    - W_dot: Norm of weight changes during training.
+
+    Example usage:
+
+    import numpy as np
+    from your_module import GeneratorNetwork, FORCETrainer
+
+    # Initialize a generator network
+    network = GeneratorNetwork(N_network=1000, N_readout=1, g_GG=1.5, p_GG=0.1, p_z=0.1, tau=10.0)
+
+    # Define target function (e.g., sine wave)
+    period = 1000
+    time = np.arange(0, period, 0.1)
+    target = np.sin(2 * np.pi * time / period).reshape(1, -1)
+
+    # Set training parameters
+    stop_period = 10
+    dt = 0.1
+    l_steps = 10
+
+    # Create and run FORCE trainer
+    trainer = FORCETrainer(network, target, stop_period, dt, l_steps)
+    trainer.train()
+
+    # Get results
+    J_GG_initial, J_GG_final, rate_all, Z_all, W_all, W_dot = trainer.get_results()
+
+    # Analyze or visualize results
+    import matplotlib.pyplot as plt
+
+    # Plot readout activity vs target
+    plt.figure(figsize=(12, 6))
+    plt.plot(Z_all[0], label='Network output')
+    plt.plot(np.tile(target[0], stop_period + 4), label='Target')
+    plt.xlabel('Time step')
+    plt.ylabel('Activity')
+    plt.title('Network Output vs Target')
+    plt.legend()
+    plt.show()
+
+    # Plot weight changes during training
+    plt.figure(figsize=(10, 6))
+    plt.plot(W_dot[0])
+    plt.xlabel('Update step')
+    plt.ylabel('Weight change (norm)')
+    plt.title('Weight Changes During Training')
+    plt.show()
+
+    Important notes:
+    - Ensure that the `network` passed to the `FORCETrainer` is properly initialized.
+    - The `target` shape should match the number of readout neurons in the network.
+    - Choose `stop_period`, `dt`, and `l_steps` carefully to balance training time and performance.
+    - The `train()` method may take significant time to run for large networks or long training periods.
+    """
+
+    @property
+    def help(self):
+        print(self._usage_guide)
+
     def __init__(self, network, target, stop_period, dt, l_steps):
         self.network = network
         self.target = target
