@@ -88,11 +88,15 @@ class FORCETrainer:
     def help(self):
         print(self._usage_guide)
 
-    def __init__(self, network, target=np.array([1, 2, 3, 4, 5, 6 , 7, 8, 9,
-                                                 1, 2, 3, 4, 5, 6 , 7, 9, 9,
-                                                 1, 2, 3, 4, 5, 6 , 7, 8, 9]), stop_period=10, dt=0.1, l_steps=1):
+    def __init__(self, network, target=np.sin(5*np.pi*np.linspace(0,200,2000)/1000), stop_period=10, dt=0.1, l_steps=1):
         self.network = network
-        self.target = target
+
+        # Ensure target is a 2D array (reshape if it's a single-dimensional array)
+        if target.ndim == 1:
+            self.target = target.reshape(1, -1)
+        else:
+            self.target = target
+
         self.stop_period = stop_period
         self.dt = dt
         self.l_steps = l_steps
