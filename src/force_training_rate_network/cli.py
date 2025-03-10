@@ -14,7 +14,7 @@ Command Line Interface (CLI) Usage Guide for FORCE Network Simulation and Traini
 This CLI allows you to simulate, train, or compute Lyapunov exponents for FORCE networks.
 
 General Usage:
-python -m your_module.cli [arguments]
+force-training-rate-network [arguments]
 
 Arguments:
   --network {generator_network,generator_network_feedback}
@@ -54,15 +54,13 @@ Lyapunov Computation Specific Arguments:
 Examples:
 
 1. Spontaneous Activity Mode:
-   python -m your_module.cli --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
+   force-training-rate-network --network generator_network --mode spontaneous --simulation_time 500 --output spontaneous.pkl
 
-2. FORCE Training Mode:
-   python -m your_module.cli --network generator_network_feedback --mode force_training --target_signal path/to/target.npy --training_periods 10 --update_step 5 --output training.pkl
+2. Lyapunov Exponent Computation Mode:
+   force-training-rate-network --network generator_network --mode lyapunov --simulation_time 30000 --renorm_interval 50 --delta_separation 1e-10 --store_trajectories --output lyapunov.pkl
 
-3. Lyapunov Exponent Computation Mode:
-   python -m your_module.cli --network generator_network --mode lyapunov --simulation_time 30000 --renorm_interval 50 --delta_separation 1e-10 --store_trajectories --output lyapunov.pkl
-
-Note: Replace 'your_module' with the actual name of your Python module.
+3. FORCE Training Mode:
+   force-training-rate-network --network generator_network_feedback --mode force_training --target_signal path/to/target.npy --training_periods 10 --update_step 5 --output training.pkl
 """
 
 
