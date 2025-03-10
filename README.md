@@ -56,7 +56,7 @@ pip install git+https://github.com/fraziphy/force-training-rate-network.git@v1.0
 To uninstall the module:
 
 ```
-pip uninstall force-training-rate-network.git@v1.0.0
+pip uninstall force-training-rate-network@v1.0.0
 ```
 =====================================
 

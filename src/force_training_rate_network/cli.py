@@ -66,6 +66,9 @@ Note: Replace 'your_module' with the actual name of your Python module.
 
 
 def main():
+    if '--extended-help' in sys.argv:
+        print(_cli_usage_guide)
+        return
     parser = argparse.ArgumentParser(description="Simulate, train, or compute Lyapunov exponent for FORCE networks.")
     parser.add_argument('--extended-help', action='store_true', help='Show extended usage guide')
     parser.add_argument("--network", type=str, choices=["generator_network", "generator_network_feedback"], required=True, help="Type of network to simulate.")
@@ -96,10 +99,6 @@ def main():
     parser.add_argument("--store_trajectories", action="store_true", help="Store trajectories of original and perturbed networks (for Lyapunov mode).")
 
     args = parser.parse_args()
-
-    if args.extended_help:
-        print(_cli_usage_guide)
-        return
 
     # Initialize network
     if args.network == "generator_network":
